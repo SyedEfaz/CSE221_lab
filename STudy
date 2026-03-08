@@ -1,0 +1,88 @@
+import java.io.*;
+
+public class Solution {
+    
+    /**
+     * Calculate modular inverse using Fermat's Little Theorem
+     * Works when m is prime: x^(-1) ≡ x^(m-2) (mod m)
+     */
+    static long modInverse(long x, long m) {
+        return power(x, m - 2, m);
+    }
+    
+    /**
+     * Calculate (base^exp) % m using fast exponentiation
+     */
+    static long power(long base, long exp, long m) {
+        long result = 1;
+        base %= m;
+        
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                result = (result * base) % m;
+            }
+            base = (base * base) % m;
+            exp >>= 1;
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Calculate (a^1 + a^2 + ... + a^n) % m efficiently
+     * Using the formula: sum = a * (a^n - 1) / (a - 1) for a != 1
+     * Or simply: sum = n for a = 1
+     */
+    static long solve(long a, long n, long m) {
+        // Case 1: a ≡ 0 (mod m)
+        if (a % m == 0) {
+            return 0;
+        }
+        
+        // Case 2: a ≡ 1 (mod m)
+        if (a % m == 1) {
+            return n % m;
+        }
+        
+        // Case 3: General case a != 1
+        // sum = a * (a^n - 1) / (a - 1)
+        
+        // Calculate a^n mod m
+        long aPowN = power(a, n, m);
+        
+        // Calculate (a^n - 1) mod m
+        long numerator = (aPowN - 1 + m) % m;
+        
+        // Calculate (a - 1) mod m
+        long denominator = (a - 1) % m;
+        
+        // Calculate modular inverse of (a - 1)
+        long inv = modInverse(denominator, m);
+        
+        // Calculate a * (a^n - 1) * inv(a - 1) mod m
+        long result = (a % m * numerator) % m;
+        result = (result * inv) % m;
+        
+        return result;
+    }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(new BufferedOutputStream(System.out));
+        
+        int T = Integer.parseInt(br.readLine());
+        
+        while (T-- > 0) {
+            String[] tokens = br.readLine().split(" ");
+            long a = Long.parseLong(tokens[0]);
+            long n = Long.parseLong(tokens[1]);
+            long m = Long.parseLong(tokens[2]);
+            
+            pw.println(solve(a, n, m));
+        }
+        
+        pw.flush();
+        pw.close();
+        br.close();
+    }
+}
