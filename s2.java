@@ -2,9 +2,9 @@ import java.io.*;
 import java.util.*;
 
 public class s2 {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        PrintWriter out = new PrintWriter(System.out);
 
         int t = Integer.parseInt(br.readLine().trim());
 
